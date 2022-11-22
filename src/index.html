@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Anti-Pro</title>
+  <meta name="viewport" content="initial-scale=1.0, width=device-width" charset="utf-8" />
+  <link rel="stylesheet" href="index.css" />
+  <link rel="shortcut icon" href="logo.png" />
+</head>
+<body>
+  <div class="page" >
+    <div class="container" >
+      <div style="margin-top:10px; margin-left:5%;">
+        <button
+          id="refreshButton"
+          class="button"
+          onClick="window.location.reload();"
+          >
+          Refresh
+        </button>
+      </div>
+      <div>
+        <h1>Anti-Pro</h1>
+      </div>
+      <h2 style="margin-top:20px; font-family: 'MajorMono'"> </h2>
+      <center>
+      <div class="hidden" id="welcome" style="margin-top:-30px; font-size: 24px;">
+      </div>
+      <div class="hidden" id="profile" style="margin-top:20px">
+        <div id="rcvLoader"></div>
+        <center>
+        <div id="rcvContainer" class="hidden" >
+          <table id="rcvTable" class="table" >
+          </table>
+        </div></center>
+      </div>
+      <div class="hidden center" id="noProfile">
+        no data found.
+      </div>
+      <br><br><br><br><br><br>
+      <a rel="noreferrer" target='_blank' href="https://github.com/sshmatrix/anti-pro">GitHub</a>
+    </div>
+  </div>
+</body>
+</html>

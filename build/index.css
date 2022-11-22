@@ -1,0 +1,326 @@
+@font-face {
+    font-family: 'EarthOrbiter';
+    src: url('EarthOrbiter.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+		margin: 0;
+		padding: 0;
+}
+
+@font-face {
+    font-family: 'Bioliquid';
+    src: url('Bioliquid.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+		margin: 0;
+		padding: 0;
+}
+
+@font-face {
+    font-family: 'MajorMono';
+    src: url('MajorMono.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+		margin: 0;
+		padding: 0;
+}
+
+@font-face {
+    font-family: 'SFMono';
+    src: url('SFMono.woff2') format('woff2');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "EarthOrbiter";
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(-45deg, rgba(238,119,82,1) 0%, rgba(231,60,126,1) 20%, rgba(35,166,213,1) 40%, rgba(35,213,171,1) 60%, rgba(213,213,35,1) 80%, rgba(60,255,44,1) 100%);
+  animation: gradient 20s ease infinite;
+  background-size: 400% 400%;
+  border-radius: 0px !important;
+  color: white;
+}
+@media only screen and (max-width: 450px) {
+    body {
+        animation: gradient 10s ease infinite;
+        background-size: 200% 200%;
+    }
+}
+
+table, th {
+  table-layout: fixed;
+  border: none;
+  padding: 4px 20px;
+  border-radius: 3px;
+  width: 100%;
+  text-align: center;
+  word-wrap: break-word;
+}
+@media only screen and (max-width: 450px) {
+    table, th {
+        padding: 4px 7px;
+    }
+}
+
+td {
+  table-layout: fixed;
+  border: 0px #8c8c8c solid;
+  padding: 4px 20px;
+  border-radius: 3px;
+  width: 100%;
+  text-align: center;
+  word-wrap: break-word;
+  background-image: linear-gradient(-45deg, rgba(6,13,14,1) 0%, rgba(63,63,68,1) 100%);
+}
+@media only screen and (max-width: 450px) {
+    td {
+        padding: 4px 7px;
+    }
+}
+
+td:hover {
+  background: black;
+}
+
+.trdesktop {
+  font-family: 'MajorMono';
+  font-weight: 800;
+  font-size: 14px;
+  color: yellow;
+}
+
+.trmobile {
+  font-family: 'MajorMono';
+  font-weight: 800;
+  font-size: 12px;
+  color: yellow;
+}
+
+.page {
+  background: url('background.png');
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0 auto;
+  max-width: 100%;
+  border-radius: 6px;
+}
+
+.hidden {
+  display: none
+}
+
+.avatar {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 200px;
+  height: 200px;
+}
+
+.logo-strobe {
+  background: linear-gradient(-45deg, rgba(238,119,82,1) 0%, rgba(231,60,126,1) 20%, rgba(35,166,213,1) 40%, rgba(35,213,171,1) 60%, rgba(213,213,35,1) 80%, rgba(60,255,44,1) 100%);
+  animation: gradient 20s ease infinite;
+  background-size: 400% 400%;
+  border-radius: 3px;
+}
+
+.icon {
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+}
+
+.tiny {
+  vertical-align: middle;
+  width: 14px;
+  height: 14px;
+}
+
+.container {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  padding: 40px 40px;
+  border-radius: 6px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background-image: radial-gradient(circle, rgba(62,62,62,1) 0%, rgba(62,62,62,1) 60%, rgba(0,0,0,0.75) 100%);
+}
+@media only screen and (max-width: 450px) {
+    .container {
+        width: 95%;
+        height: 90%;
+        padding: 7px 7px;
+    }
+}
+
+.small {
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  height: 20%;
+  padding: 20px 20px;
+}
+
+.button {
+  appearance: none;
+  border: none;
+  font-family: "EarthOrbiter";
+  background-image: linear-gradient(to right, #3898FF, #7A70FF);
+  line-height: 1;
+  font-size: 16px;
+  font-weight: 400;
+  height: 35px;
+  padding: 1px 24px;
+  border-radius: 6px;
+  align-items: left;
+  color: white;
+  transition: all ease 100ms;
+}
+
+button:not(:disabled):hover {
+  transform: scale(1.2);
+}
+
+button:disabled,
+button[disabled]{
+  background: rgba(222, 252, 231, 0.24);
+}
+
+button[inactive="true"] {
+  background: rgba(222, 252, 231, 0.24);
+}
+
+button[loading="true"] {
+  background-image: linear-gradient(270deg, #FF6257, #FF5CA0);
+  position: relative;
+}
+
+  button[loading="true"]::after {
+    animation-name: pulse;
+    animation-duration: 500ms;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    background-color: #FF6257;
+    border-radius: inherit;
+    bottom: 0;
+    content: ' ';
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+button[done="true"] {
+   opacity: 0;
+   transform: scale(0.85);
+}
+
+h1 {
+  font-size: 52px;
+  font-family: "EarthOrbiter";
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+@media only screen and (max-width: 450px) {
+    h1 {
+        font-size: 44px;
+    }
+}
+
+h2 { font-size: 36px; weight: 800 }
+h3 { font-size: 24px; weight: 800 }
+h4 { font-size: 18px; weight: 800 }
+
+a:link {
+  color: white;
+  background-color: transparent;
+  text-decoration: none;
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+a:visited {
+  color: yellow;
+  background-color: transparent;
+  text-decoration: none;
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+a:hover {
+  color: yellow;
+  background-color: white;
+  text-decoration: none;
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0 }
+  100% { opacity: '100%' }
+}
+
+iframe {
+  background: #ccc;
+  border: 1px solid #ccc;
+  height: 10rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  filter: invert(1);
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  font-size: 16px;
+}
+@media only screen and (max-width: 450px) {
+    .tooltip {
+        font-size: 14px;
+    }
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 135px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 4px 5px;
+  border-radius: 4px;
+  border: 1px white solid;
+  position: absolute;
+  z-index: 1;
+  font-family: 'EarthOrbiter';
+  font-weight: 400;
+  font-size: 12px;
+  margin-bottom: 20px;
+  margin-left: 5px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
