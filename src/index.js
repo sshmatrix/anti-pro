@@ -131,7 +131,7 @@ async function displayResults(proposalId, title, candidates, end) {
   welcomeElm.innerHTML = `<span style="font-size: 22px;">Ranked Choice Voting Calculator</span>`;
   const results = await countElectionVotes(proposalId, title, candidates, end);
   welcomeElm.innerHTML += `<br></br><span style="font-size: 16px;" class="${tr}">${title.toLowerCase()}</span>`;
-  welcomeElm.innerHTML += `<br></br><a rel="noreferrer" target='_blank' href="https://snapshot.org/#/ens.eth/proposal/${proposalId.toLowerCase()}" style="font-size: 15px; color: white">link to snapshot ↗</a>`;
+  welcomeElm.innerHTML += `<br></br><a rel="noreferrer" target='_blank' href="https://snapshot.org/#/ens.eth/proposal/${proposalId.toLowerCase()}" style="font-size: 15px;">link to snapshot ↗</a>`;
   if (results) {
     for (var i = 0; i < results.details.winners.length; i++) {
       rcvTableElm.innerHTML += `<tr><td><div class="tooltip">${currentList[i]}</div></td><td><span class="${tr}">${results.details.winners[i].toLowerCase()}</span></td></tr>`

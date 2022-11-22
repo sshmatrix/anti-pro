@@ -251,7 +251,7 @@ a:link {
 }
 
 a:visited {
-  color: yellow;
+  color: white;
   background-color: transparent;
   text-decoration: none;
   padding: 1px 3px;
@@ -259,7 +259,7 @@ a:visited {
 }
 
 a:hover {
-  color: yellow;
+  color: black;
   background-color: white;
   text-decoration: none;
   padding: 1px 3px;
