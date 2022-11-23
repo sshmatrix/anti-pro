@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="index.css" />
   <link rel="shortcut icon" href="logo.png" />
 </head>
+<script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 <body>
   <div class="page" >
     <div class="container" >
@@ -21,10 +22,12 @@
       </div>
       <div>
         <h1>Anti-Pro</h1>
+        <h4 style="text-align: center; margin-top: -10px; color: orange">Snapshot</h4>
+        <h3 style="text-align: center; margin-top: -10px;">Ranked Choice Voting Calculator</h3>
       </div>
-      <h2 style="margin-top:20px; font-family: 'MajorMono'"> </h2>
+      <div id="input" style="font-family: 'MajorMono'; text-align: center; font-weight: 800" onchange="window.displayResults()" ></div>
       <center>
-      <div class="hidden" id="welcome" style="margin-top:-30px; font-size: 24px;">
+      <div class="hidden" id="welcome" style="margin-top:30px; font-size: 24px;">
       </div>
       <div class="hidden" id="profile" style="margin-top:20px">
         <div id="rcvLoader"></div>

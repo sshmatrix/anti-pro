@@ -88,15 +88,15 @@ td:hover {
 }
 
 .trdesktop {
-  font-family: 'MajorMono';
-  font-weight: 800;
+  font-family: 'SFMono';
+  font-weight: 400;
   font-size: 14px;
   color: yellow;
 }
 
 .trmobile {
-  font-family: 'MajorMono';
-  font-weight: 800;
+  font-family: 'SFMono';
+  font-weight: 400;
   font-size: 12px;
   color: yellow;
 }
@@ -239,8 +239,18 @@ h1 {
 }
 
 h2 { font-size: 36px; weight: 800 }
-h3 { font-size: 24px; weight: 800 }
-h4 { font-size: 18px; weight: 800 }
+h3 { font-size: 20px; weight: 400; font-family: 'Bioliquid' }
+h4 { font-size: 20px; weight: 800; font-family: 'Bioliquid' }
+
+.item {
+  color: white;
+  background-color: black;
+  font-family: "SFMono";
+  text-decoration: none;
+  padding: 1px 3px;
+  border-radius: 3px;
+  max-width: 100%;
+}
 
 a:link {
   color: white;
@@ -323,4 +333,14 @@ iframe {
 	100% {
 		background-position: 0% 50%;
 	}
+}
+
+.blink_me {
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

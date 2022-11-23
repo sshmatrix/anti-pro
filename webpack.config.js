@@ -19,7 +19,7 @@ module.exports = {
   output: {
     filename: 'main.js',
     path: path.join(__dirname,'/build'),
-    publicPath: '',
+    publicPath: ''
   },
   externals: {
     'Config': JSON.stringify(process.env.NODE_ENV === 'production' ? {
