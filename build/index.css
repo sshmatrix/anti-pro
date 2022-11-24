@@ -238,9 +238,10 @@ h1 {
     }
 }
 
-h2 { font-size: 36px; weight: 800 }
-h3 { font-size: 20px; weight: 400; font-family: 'Bioliquid' }
-h4 { font-size: 20px; weight: 800; font-family: 'Bioliquid' }
+h2 { font-size: 18px; weight: 1200; font-family: 'MajorMono'; letter-spacing: -0.2px }
+h3 { font-size: 16px; weight: 1200; font-family: 'MajorMono'; letter-spacing: 0px }
+h4 { font-size: 13px; weight: 1200; font-family: 'MajorMono'; letter-spacing: 0px }
+h5 { font-size: 16px; weight: 800;  font-family: 'Bioliquid'; letter-spacing: 0px }
 
 .item {
   color: white;
@@ -249,7 +250,7 @@ h4 { font-size: 20px; weight: 800; font-family: 'Bioliquid' }
   text-decoration: none;
   padding: 1px 3px;
   border-radius: 3px;
-  max-width: 100%;
+  max-width: 50%;
 }
 
 a:link {
@@ -343,4 +344,31 @@ iframe {
   50% {
     opacity: 0;
   }
+}
+
+.links path {
+     opacity: 0.3;
+ }
+
+.nodes text {
+   font-family: 'SFMono';
+   font-size: 10px;
+}
+
+.nodes line {
+   stroke: white;
+   stroke-width: 4px;
+   border-radius: 3px;
+}
+
+svg {
+ position: absolute;
+}
+
+canvas {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ background: white;
+ border-radius: 5px;
 }

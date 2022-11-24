@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "caritat": "0.0.4",
+    "d3-sankey-diagram": "^0.8.0",
     "ethers": "^5.5.4",
     "html-webpack-inject-attributes-plugin": "^1.0.6",
     "html-webpack-script-attributes-plugin": "^2.0.2"
