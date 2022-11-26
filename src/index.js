@@ -369,12 +369,12 @@ function sankeyDiagram(data, candidates) {
       // nodes []
       if (data[i].candidates[candidate].weight > 0 || data[i].candidates[candidate].votes > 0) {
         if (i < data.length - 1) {
-          nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)}`})
+          nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)}↔${candidates[candidate - 1].slice(0,3)}`})
         } else {
           if (data[i].candidates[candidate].status === "elected") {
-            nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)} ✅`})
+            nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)}↔${candidates[candidate - 1].slice(0,3)} ✅`})
           } else {
-            nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)} ❌`})
+            nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)}↔${candidates[candidate - 1].slice(0,3)} ❌`})
           }
         }
       }
