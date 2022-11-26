@@ -4,6 +4,7 @@
   "description": "anti-pro",
   "main": "index.js",
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "webpack serve",
     "build": "NODE_ENV=production webpack --config ./webpack.config.js"
   },
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "html-webpack-plugin": "5.5.0",
+    "patch-package": "^6.5.0",
     "webpack": "5.68.0",
     "webpack-cli": "4.10.0",
     "webpack-dev-server": "4.7.4"

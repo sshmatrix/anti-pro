@@ -329,100 +329,52 @@ function sankeyDiagram(data, candidates) {
   sankeyElm.innerHTML += `<canvas width="${canvasWidth}" height="250"></canvas>`
   const nodes = []; const links = [];
 
-  {/*
-  let status = null;
-  for (var i = 0; i < data.length; i++) {
-    let flat = Object.values(Object.values(data[i])[0]);
-    for (var k = 0; k < flat.length; k++) {
-      if (flat[k].weight === 0) {
-        status = i;
-        break;
-      }
-    }
-    if ( status >= 0 && status != null ) {
-      break;
-    }
-  }
-  */
-
-  /*
-  var count = 0;
-  var prevElim = [];
-  for (var i = 0; i < data.length; i++) {
-    count = 0
-    for (var candidate in data[i].candidates) {
-      if (data[i].candidates[candidate].votes != 0 || data[i].candidates[candidate].weight != 0) {
-        count = count + 1
-      }
-    }
-    prevElim.push(count);
-  }
-  */}
-
-  status = 0; // Hard Set; overrides skipping renormalisation steps
   for (var i = 0; i < data.length; i++) {
     for (var candidate in data[i].candidates) {
       let scale = Math.pow(10, Math.round(Math.log10(data[i].totalVotes)))
       scale = 1
-      // set backward links for all rounds except first
-      if (i > status) {
-        if (data[i].candidates[candidate].weight > 0) { // weight > 0
-          let diff = Math.round(data[i].candidates[candidate].votes) - Math.round(data[i - 1].candidates[candidate].votes)
-          for (var candidate_ in data[i - 1].candidates) {
-            let flow = 0
-            if (candidate_ === candidate) {
-              if (Math.round(data[i - 1].candidates[candidate].weight * 1000) / 1000 === Math.round(data[i].candidates[candidate].weight * 1000) / 1000) {
-                flow = (Math.round(data[i - 1].candidates[candidate_].votes) === 0 ? 1 : data[i - 1].candidates[candidate_].votes) / scale
-                links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": flow});
-              } else {
-                if (Math.round(data[i - 1].candidates[candidate_].votes) > Math.round(data[i].candidates[candidate_].votes)) {
-                  flow = (data[i].candidates[candidate].weight * data[i - 1].candidates[candidate].votes) /  scale
-                  links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": flow});
-                } else {
-                  flow = data[i - 1].candidates[candidate].votes /  scale
-                  links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": flow});
-                }
+      // links[]
+      if (i < data.length - 1) {
+        if (i === 0) {
+          if (data[i].electedCount > 1) {
+            continue
+          }
+        } else {
+          if (data[i + 1].electedCount - data[i].electedCount > 1) {
+            continue
+          }
+        }
+        if ((data[i].candidates[candidate].status === "elected" && data[i].candidates[candidate].weight === 1) || (data[i].candidates[candidate].status === "eliminated" && data[i].candidates[candidate].votes > 0)) {
+          for (var candidate_ in data[i + 1].candidates) {
+            if (candidate === candidate_) {
+              if (data[i + 1].candidates[candidate_].votes > 0) {
+                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": data[i + 1].candidates[candidate_].votes});
               }
             } else {
-              if (diff > 0) {
-                if (Math.round(data[i - 1].candidates[candidate_].votes) > Math.round(data[i].candidates[candidate_].votes)) {
-                  flow = diff
-                  links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate_}"`, "value": flow});
-                }
+              if (data[i + 1].candidates[candidate_].votes > 0) {
+                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": data[i + 1].candidates[candidate_].votes - data[i].candidates[candidate_].votes});
               }
             }
           }
-        } else { // weight = 0
-          if (Math.round(data[i].candidates[candidate].votes) > 0) { // votes > 0
-            let diff = Math.round(data[i].candidates[candidate].votes) - Math.round(data[i - 1].candidates[candidate].votes)
-            for (var candidate_ in data[i - 1].candidates) {
-              let flow = 0
-              if (candidate_ === candidate) {
-                flow = (Math.round(data[i - 1].candidates[candidate_].votes) === 0 ? 1 : data[i - 1].candidates[candidate_].votes) / scale
-                links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": flow});
-              } else {
-                if (diff > 0) {
-                  if (Math.round(data[i - 1].candidates[candidate_].votes) > Math.round(data[i].candidates[candidate_].votes)) {
-                    flow = diff
-                    links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate_}"`, "value": flow});
-                  }
-                }
+        } else {
+          for (var candidate_ in data[i + 1].candidates) {
+            if (candidate === candidate_) {
+              if (data[i].candidates[candidate].votes > 0) {
+                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": data[i].candidates[candidate].votes});
               }
             }
           }
         }
       }
-      // set nodes for all rounds
-      if (i > status - 1) {
-        if (data[i].candidates[candidate].weight > 0 || data[i].candidates[candidate].votes > 0) { // weight || votes > 0
-          if (i < data.length - 1) {
-            nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)}`})
+      // nodes []
+      if (data[i].candidates[candidate].weight > 0 || data[i].candidates[candidate].votes > 0) {
+        if (i < data.length - 1) {
+          nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)}`})
+        } else {
+          if (data[i].candidates[candidate].status === "elected") {
+            nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)} ✅`})
           } else {
-            if (data[i].candidates[candidate].status === "elected") {
-              nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)} ✅`})
-            } else {
-              nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)} ❌`})
-            }
+            nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)} ❌`})
           }
         }
       }
@@ -432,9 +384,6 @@ function sankeyDiagram(data, candidates) {
   if (links.length === 0 || nodes.length === 0) {
     sankeyElm.innerHTML = `<span class="item" style="font-size: 12px; color: white; character-spacing: -0.5px; padding: 5px 10px 10px 5px">⚠️ no graphic to display: winners elected in the very first round ⚠️</span>`
   } else {
-    console.log(data)
-    console.log(nodes)
-    console.log(links)
     var graph = {
       nodes: nodes,
       links: links

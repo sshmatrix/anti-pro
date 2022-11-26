@@ -1,0 +1,13 @@
+diff --git a/node_modules/caritat/src/stv/meek.js b/node_modules/caritat/src/stv/meek.js
+index d7e8bac..3081f80 100644
+--- a/node_modules/caritat/src/stv/meek.js
++++ b/node_modules/caritat/src/stv/meek.js
+@@ -31,7 +31,7 @@ function countVotes (oldState, ballots) {
+       }
+     });
+     state.excess += value;
+-
++    console.log(state)
+   });
+ 
+   state.quota = (state.totalVotes - state.excess) * state.hbFactor;
