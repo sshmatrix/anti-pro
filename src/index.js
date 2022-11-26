@@ -12,6 +12,7 @@ const inputElm = document.getElementById('input');
 const seatsElm = document.getElementById('seats');
 const spaceElm = document.getElementById('space');
 const stateElm = document.getElementById('state');
+const animeElm = document.getElementById('anime');
 const sankeyElm = document.getElementById('sankey');
 const rcvLoaderElm = document.getElementById('rcvLoader');
 const rcvContainerElm = document.getElementById('rcvContainer');
@@ -32,6 +33,7 @@ if (widthScreen <= 400) {
 }
 
 async function main() {
+  animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
   welcomeElm.innerHTML = ``
   rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
@@ -43,6 +45,7 @@ async function main() {
 }
 
 async function setSpace() {
+  animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
   rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
   rcvTableElm.innerHTML = ``
@@ -83,6 +86,7 @@ async function setSpace() {
 }
 
 async function setProposal() {
+  animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
   rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
   rcvTableElm.innerHTML = ``
@@ -122,6 +126,7 @@ async function setProposal() {
 }
 
 async function getProposal(proposalId) {
+  animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
   rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
   rcvTableElm.innerHTML = ``
@@ -164,6 +169,7 @@ async function getProposal(proposalId) {
 }
 
 async function getChoices(proposalId) {
+  animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
   rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
   rcvTableElm.innerHTML = ``
@@ -192,6 +198,7 @@ async function getChoices(proposalId) {
 }
 
 async function setSeats(){
+  animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
   rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
   let proposalId = $('#selectProposal').find(":selected").val();
@@ -297,6 +304,7 @@ async function showRanking() {
         }
       }
       // Sankey Flow
+      animeElm.innerHTML = `<label class="switch" style="margin-bottom: -15px"><input id="selectAnime" type="checkbox" value="true"><div class="slider"></div></label><br></br><span style="font-size: 14px; font-weight: 400; font-family: 'SFMono'">animate</span>`
       sankeyDiagram(results.fullLog, candidates);
     } else {
       rcvTableElm.innerHTML = `<span style="font-size: 18px; color: orange">❌ no results ❌</span>`;
@@ -320,6 +328,8 @@ function sankeyDiagram(data, candidates) {
   sankeyElm.innerHTML = `<svg width="${canvasWidth}" height="250"></svg>`
   sankeyElm.innerHTML += `<canvas width="${canvasWidth}" height="250"></canvas>`
   const nodes = []; const links = [];
+
+  {/*
   let status = null;
   for (var i = 0; i < data.length; i++) {
     let flat = Object.values(Object.values(data[i])[0]);
@@ -333,18 +343,78 @@ function sankeyDiagram(data, candidates) {
       break;
     }
   }
+  */
+
+  /*
+  var count = 0;
+  var prevElim = [];
+  for (var i = 0; i < data.length; i++) {
+    count = 0
+    for (var candidate in data[i].candidates) {
+      if (data[i].candidates[candidate].votes != 0 || data[i].candidates[candidate].weight != 0) {
+        count = count + 1
+      }
+    }
+    prevElim.push(count);
+  }
+  */}
+
+  status = 0; // Hard Set; overrides skipping renormalisation steps
   for (var i = 0; i < data.length; i++) {
     for (var candidate in data[i].candidates) {
-      if (data[i].candidates[candidate].votes != 0) {
-        if (i > status) {
-          links.push({"source": `"${i}-${candidate}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": data[i - 1].candidates[candidate].votes});
+      let scale = Math.pow(10, Math.round(Math.log10(data[i].totalVotes)))
+      scale = 1
+      // set backward links for all rounds except first
+      if (i > status) {
+        if (data[i].candidates[candidate].weight > 0) { // weight > 0
+          let diff = Math.round(data[i].candidates[candidate].votes) - Math.round(data[i - 1].candidates[candidate].votes)
           for (var candidate_ in data[i - 1].candidates) {
-            if (data[i - 1].candidates[candidate_].weight === 0 && data[i - 1].candidates[candidate_].votes != 0) {
-              links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate_}"`, "value": (data[i].candidates[candidate].votes - data[i - 1].candidates[candidate].votes)});
+            let flow = 0
+            if (candidate_ === candidate) {
+              if (Math.round(data[i - 1].candidates[candidate].weight * 1000) / 1000 === Math.round(data[i].candidates[candidate].weight * 1000) / 1000) {
+                flow = (Math.round(data[i - 1].candidates[candidate_].votes) === 0 ? 1 : data[i - 1].candidates[candidate_].votes) / scale
+                links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": flow});
+              } else {
+                if (Math.round(data[i - 1].candidates[candidate_].votes) > Math.round(data[i].candidates[candidate_].votes)) {
+                  flow = (data[i].candidates[candidate].weight * data[i - 1].candidates[candidate].votes) /  scale
+                  links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": flow});
+                } else {
+                  flow = data[i - 1].candidates[candidate].votes /  scale
+                  links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": flow});
+                }
+              }
+            } else {
+              if (diff > 0) {
+                if (Math.round(data[i - 1].candidates[candidate_].votes) > Math.round(data[i].candidates[candidate_].votes)) {
+                  flow = diff
+                  links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate_}"`, "value": flow});
+                }
+              }
+            }
+          }
+        } else { // weight = 0
+          if (Math.round(data[i].candidates[candidate].votes) > 0) { // votes > 0
+            let diff = Math.round(data[i].candidates[candidate].votes) - Math.round(data[i - 1].candidates[candidate].votes)
+            for (var candidate_ in data[i - 1].candidates) {
+              let flow = 0
+              if (candidate_ === candidate) {
+                flow = (Math.round(data[i - 1].candidates[candidate_].votes) === 0 ? 1 : data[i - 1].candidates[candidate_].votes) / scale
+                links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate}"`, "value": flow});
+              } else {
+                if (diff > 0) {
+                  if (Math.round(data[i - 1].candidates[candidate_].votes) > Math.round(data[i].candidates[candidate_].votes)) {
+                    flow = diff
+                    links.push({"source": `"${i}-${candidate_}"`, "target": `"${i + 1}-${candidate}"`, "type": `"${candidate_}"`, "value": flow});
+                  }
+                }
+              }
             }
           }
         }
-        if (i > status - 1) {
+      }
+      // set nodes for all rounds
+      if (i > status - 1) {
+        if (data[i].candidates[candidate].weight > 0 || data[i].candidates[candidate].votes > 0) { // weight || votes > 0
           if (i < data.length - 1) {
             nodes.push({"id": `"${i + 1}-${candidate}"`, "title": `${Number(candidate)}`})
           } else {
@@ -359,89 +429,94 @@ function sankeyDiagram(data, candidates) {
     }
   }
 
-  var graph = {
-    nodes: nodes,
-    links: links
-  };
+  if (links.length === 0 || nodes.length === 0) {
+    sankeyElm.innerHTML = `<span class="item" style="font-size: 12px; color: white; character-spacing: -0.5px; padding: 5px 10px 10px 5px">⚠️ no graphic to display: winners elected in the very first round ⚠️</span>`
+  } else {
+    console.log(data)
+    console.log(nodes)
+    console.log(links)
+    var graph = {
+      nodes: nodes,
+      links: links
+    };
 
-  // Say value measured in t/year, and each dot is 1 kg.
-  // So after running for the equivalent of 1 year, we should have seen `1000 *
-  // value` dots go by. Assuming they are spread evenly, the interval between
-  // adding new dots should be T/(1000*value).
+    // Say value measured in t/year, and each dot is 1 kg.
+    // So after running for the equivalent of 1 year, we should have seen `1000 *
+    // value` dots go by. Assuming they are spread evenly, the interval between
+    // adding new dots should be T/(1000*value).
+    // Set up SVG
+    var svg = d3.select('svg');
+    var width = +svg.attr('width');
+    var height = +svg.attr('height');
+    var margin = { top: 10, left: 70, bottom: 10, right: 0 };
 
-  // Set up SVG
-  var svg = d3.select('svg');
-  var width = +svg.attr('width');
-  var height = +svg.attr('height');
-  var margin = { top: 10, left: 70, bottom: 10, right: 0 };
+    var layout = d3.sankey()
+                   .extent([
+                     [margin.left, margin.top],
+                     [width - margin.left - margin.right, height - margin.top - margin.bottom]]);
 
-  var layout = d3.sankey()
-                 .extent([
-                   [margin.left, margin.top],
-                   [width - margin.left - margin.right, height - margin.top - margin.bottom]]);
+    // Render
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+    var diagram = d3.sankeyDiagram()
+                    .linkMinWidth(function(d) { return 0.1; })
+                    .linkColor(function(d) { return color(d.type); });
 
-  // Render
-  var color = d3.scaleOrdinal(d3.schemeCategory10);
-  var diagram = d3.sankeyDiagram()
-                  .linkMinWidth(function(d) { return 0.1; })
-                  .linkColor(function(d) { return color(d.type); });
+    update();
 
-  update();
+    function update() {
+      console.log(layout(graph));
 
-  function update() {
-    console.log(layout(graph));
-
-    svg
-      .datum(graph)
-      .call(diagram);
-    /* .transition().duration(1000).ease(d3.easeCubic) */
-  }
-
-  var T = ( 300 * 1000 ); // seconds for a year
-
-  var freqCounter = 1;
-  var t = d3.timer(tick, 500);
-  var particles = [];
-  function tick(elapsed) {
-    particles = particles.filter(function (d) {
-      return elapsed - d.time < d.duration;
-    });
-    if (freqCounter > 100) {
-      freqCounter = 1;
+      svg
+        .datum(graph)
+        .call(diagram);
+      /* .transition().duration(1000).ease(d3.easeCubic) */
     }
-    graph.links.forEach(d => {
-      d.lastNew = d.lastNew || 0;
-      if ((elapsed - d.lastNew) > (T / d.value / 1000)) {
-        d.lastNew = elapsed;
-        var offset = (Math.random() - .5) * d.dy;
-        particles.push({
-          link: d,
-          time: elapsed,
-          duration: 1000 * d.points.length,
-          offset: offset,
-          path: this,
-          interp: d3.piecewise(d3.interpolate, d.points),
-        })
+
+    var T = 300 * 1000; // seconds for a year
+    var freqCounter = 1;
+    var t = d3.timer(tick, 500);
+    var particles = [];
+    function tick(elapsed) {
+      particles = particles.filter(function (d) {
+        return elapsed - d.time < d.duration;
+      });
+      if (freqCounter > 100) {
+        freqCounter = 1;
       }
-    })
-    /* d3.selectAll(".link").select('path') */
-    /* .each( */
-    /* function (d) { */
-    /* if (40 >= freqCounter) { */
-    /* var offset = (Math.random() - .5) * d.dy; */
-    /* particles.push({link: d, time: elapsed, offset: offset, path: this}) */
-    /* } */
-    /* }); */
-    //particleEdgeCanvasPath(elapsed);
-    freqCounter++;
-    /* console.log(particles) */
+      graph.links.forEach(d => {
+        d.lastNew = d.lastNew || 0;
+        if ((elapsed - d.lastNew) > (T / d.value / 1000)) {
+          d.lastNew = elapsed;
+          var offset = (Math.random() - .5) * d.dy;
+          particles.push({
+            link: d,
+            time: elapsed,
+            duration: 1000 * d.points.length,
+            offset: offset,
+            path: this,
+            interp: d3.piecewise(d3.interpolate, d.points),
+          })
+        }
+      })
+      /* d3.selectAll(".link").select('path') */
+      /* .each( */
+      /* function (d) { */
+      /* if (40 >= freqCounter) { */
+      /* var offset = (Math.random() - .5) * d.dy; */
+      /* particles.push({link: d, time: elapsed, offset: offset, path: this}) */
+      /* } */
+      /* }); */
+      //particleEdgeCanvasPath(elapsed);
+      freqCounter++;
+      /* console.log(particles) */
+    }
   }
   function particleEdgeCanvasPath(elapsed) {
     var context = d3.select("canvas").node().getContext("2d")
     context.clearRect(0,0,1000,1000);
-    context.fillStyle = "white";
-    context.lineWidth = "2px";
-    context.opacity = "0.25";
+    context.fillStyle = "gray";
+    context.lineWidth = "0px";
+    context.opacity = "0.5";
     for (var x in particles) {
       var currentTime = elapsed - particles[x].time;
       var currentPercent = currentTime / 1000 / particles[x].link.points.length; //particles[x].duration;
@@ -451,7 +526,8 @@ function sankeyDiagram(data, candidates) {
       context.fillStyle = color(particles[x].link.type); //particles[x].link.particleColor(currentTime);
       context.arc(currentPos.x,currentPos.y + particles[x].offset,
                   1, // particles[x].link.particleSize,
-                  0,2*Math.PI);
+                  0,
+                  2 * Math.PI);
       context.fill();
     }
   }
