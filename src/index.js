@@ -128,7 +128,6 @@ async function setProposal() {
 async function getProposal(proposalId) {
   animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
   rcvTableElm.innerHTML = ``
   welcomeElm.innerHTML = ``
   let oneProposal = await fetch(snapshotApi, {
@@ -281,9 +280,48 @@ async function countElectionVotes(proposalId, title, candidates, end, space, sea
   }
 }
 
+async function showModal() {
+  if (document.getElementById("selectAnime").checked === false) {
+    showRanking();
+  } else {
+    sankeyElm.innerHTML = ``
+    rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">animating ⌛</span>`;
+    rcvTableElm.innerHTML = ``
+    welcomeElm.innerHTML = ``
+    let proposalId = $('#selectProposal').find(":selected").val();
+    const { title, candidates, end, space } = await getProposal(proposalId);
+    let seatsToFill = $('#selectSeats').find(":selected").val();
+    if (seatsToFill) {
+      profileElm.classList = '';
+      welcomeElm.innerHTML = '';
+      const results = await countElectionVotes(proposalId, title, candidates, end, space, Number(seatsToFill));
+      welcomeElm.innerHTML += `<h2>${title.toLowerCase()}</h2>`;
+      welcomeElm.innerHTML += `<a rel="noreferrer" target='_blank' href="https://snapshot.org/#/${space}/proposal/${proposalId.toLowerCase()}" style="font-size: 15px;">link to snapshot ↗</a>`;
+      if (results) {
+        rcvTableElm.innerHTML = `<tr><td><div class="tooltip">rank</div></td><td><span style="font-family:'EarthOrbiter'">choice</span></td><td><span style="font-family:'EarthOrbiter'">index</span></td><td><span style="font-family:'EarthOrbiter'">votes</span></td></tr>`
+        let currentList = Array.from(Array(Number(seatsToFill)).keys());
+        for (var i = 0; i < results.details.winners.length; i++) {
+          if (results.details.winners[i]) {
+            rcvTableElm.innerHTML += `<tr><td><div class="tooltip">${(currentList[i] + 1).toString()}</div></td><td><span class="${tr}">${results.details.winners[i]}</span></td><td><span class="${tr}">${candidates.indexOf(results.details.winners[i]) + 1}</span></td><td><span class="${tr}">${results.details.prevStandings[i].votes.toString().split(".")[0]}</span></td></tr>`
+          }
+        }
+        // Sankey Flow
+        animeElm.innerHTML = `<label class="switch" style="margin-bottom: -15px"><input id="selectAnime" type="checkbox"><div class="slider"></div></label><br></br><span style="font-size: 14px; font-weight: 400; font-family: 'SFMono'">animate</span>`
+        document.getElementById("selectAnime").checked = true;
+        sankeyDiagram(results.fullLog, candidates, true);
+      } else {
+        rcvTableElm.innerHTML = `<span style="font-size: 18px; color: orange">❌ no results ❌</span>`;
+      }
+      rcvLoaderElm.innerHTML = '';
+      rcvContainerElm.classList = '';
+      welcomeElm.classList = ``;
+    }
+  }
+}
+
 async function showRanking() {
   sankeyElm.innerHTML = ``
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">processing ⌛</span>`;
   rcvTableElm.innerHTML = ``
   welcomeElm.innerHTML = ``
   let proposalId = $('#selectProposal').find(":selected").val();
@@ -304,8 +342,9 @@ async function showRanking() {
         }
       }
       // Sankey Flow
-      animeElm.innerHTML = `<label class="switch" style="margin-bottom: -15px"><input id="selectAnime" type="checkbox" value="true"><div class="slider"></div></label><br></br><span style="font-size: 14px; font-weight: 400; font-family: 'SFMono'">animate</span>`
-      sankeyDiagram(results.fullLog, candidates);
+      animeElm.innerHTML = `<label class="switch" style="margin-bottom: -15px"><input id="selectAnime" type="checkbox"><div class="slider"></div></label><br></br><span style="font-size: 14px; font-weight: 400; font-family: 'SFMono'">animate</span>`
+      document.getElementById("selectAnime").checked = false;
+      sankeyDiagram(results.fullLog, candidates, false);
     } else {
       rcvTableElm.innerHTML = `<span style="font-size: 18px; color: orange">❌ no results ❌</span>`;
     }
@@ -324,23 +363,19 @@ async function displayResults() {
   }
 }
 
-function sankeyDiagram(data, candidates) {
+function sankeyDiagram(data, candidates, anime) {
   sankeyElm.innerHTML = `<svg width="${canvasWidth}" height="250"></svg>`
   sankeyElm.innerHTML += `<canvas width="${canvasWidth}" height="250"></canvas>`
   const nodes = []; const links = [];
-
+  let totalVotes = 0
   for (var i = 0; i < data.length; i++) {
     for (var candidate in data[i].candidates) {
-      let scale = Math.pow(10, Math.round(Math.log10(data[i].totalVotes)))
-      scale = 1
+      let scale = 1
+      totalVotes = data[i].totalVotes
       // links[]
       if (i < data.length - 1) {
         if (i === 0) {
           if (data[i].electedCount > 1) {
-            continue
-          }
-        } else {
-          if (data[i + 1].electedCount - data[i].electedCount > 1) {
             continue
           }
         }
@@ -348,11 +383,11 @@ function sankeyDiagram(data, candidates) {
           for (var candidate_ in data[i + 1].candidates) {
             if (candidate === candidate_) {
               if (data[i + 1].candidates[candidate_].votes > 0) {
-                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": data[i + 1].candidates[candidate_].votes});
+                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": data[i + 1].candidates[candidate_].votes / scale});
               }
             } else {
               if (data[i + 1].candidates[candidate_].votes > 0) {
-                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": data[i + 1].candidates[candidate_].votes - data[i].candidates[candidate_].votes});
+                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": Math.abs(data[i + 1].candidates[candidate_].votes - data[i].candidates[candidate_].votes)  / scale});
               }
             }
           }
@@ -360,7 +395,7 @@ function sankeyDiagram(data, candidates) {
           for (var candidate_ in data[i + 1].candidates) {
             if (candidate === candidate_) {
               if (data[i].candidates[candidate].votes > 0) {
-                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": data[i].candidates[candidate].votes});
+                links.push({"source": `"${i + 1}-${candidate}"`, "target": `"${i + 2}-${candidate_}"`, "type": `"${candidate_}"`, "value": data[i].candidates[candidate].votes  / scale});
               }
             }
           }
@@ -421,7 +456,7 @@ function sankeyDiagram(data, candidates) {
       /* .transition().duration(1000).ease(d3.easeCubic) */
     }
 
-    var T = 300 * 1000; // seconds for a year
+    var T = 300 * 1000 * (totalVotes / 20); // seconds for a year
     var freqCounter = 1;
     var t = d3.timer(tick, 500);
     var particles = [];
@@ -455,7 +490,9 @@ function sankeyDiagram(data, candidates) {
       /* particles.push({link: d, time: elapsed, offset: offset, path: this}) */
       /* } */
       /* }); */
-      //particleEdgeCanvasPath(elapsed);
+      if (document.getElementById("selectAnime").checked === true) {
+        particleEdgeCanvasPath(elapsed);
+      }
       freqCounter++;
       /* console.log(particles) */
     }
@@ -502,3 +539,4 @@ window.setSpace = setSpace;
 window.setSeats = setSeats;
 window.setProposal = setProposal;
 window.showRanking = showRanking;
+window.showModal = showModal;
