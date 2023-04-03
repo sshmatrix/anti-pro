@@ -36,7 +36,7 @@ async function main() {
   animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
   welcomeElm.innerHTML = ``
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">fetching data ⌛</span>`;
   let optionElm = `<option value="" disabled selected>select state</option>`;
   optionElm += `<option value="active">active</option><br></br>`;
   optionElm += `<option value="closed">closed</option><br></br>`;
@@ -47,7 +47,7 @@ async function main() {
 async function setSpace() {
   animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">fetching data ⌛</span>`;
   rcvTableElm.innerHTML = ``
   welcomeElm.innerHTML = ``
   let stateId = $('#selectState').find(":selected").val();
@@ -82,13 +82,13 @@ async function setSpace() {
     }
     spaceElm.innerHTML = `<span style="font-size: 14px; font-weight: 400; font-family: 'SFMono'">in space </span><select class="item" id="selectSpace">${optionElm}</select>`;
   }
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: yellow">↑ Waiting for input ↑</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">↑ waiting for input ↑</span>`;
 }
 
 async function setProposal() {
   animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">fetching data ⌛</span>`;
   rcvTableElm.innerHTML = ``
   welcomeElm.innerHTML = ``
   let stateId = $('#selectState').find(":selected").val();
@@ -122,7 +122,7 @@ async function setProposal() {
     optionElm += `<option value="${data.proposals[i].id}">${data.proposals[i].title}</option><br></br>`;
   }
   inputElm.innerHTML = `<span style="font-size: 14px; font-weight: 400; font-family: 'SFMono'">proposal </span><select class="item" id="selectProposal">${optionElm}</select>`;
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: yellow">↑ Waiting for input ↑</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">↑ waiting for input ↑</span>`;
 }
 
 async function getProposal(proposalId) {
@@ -170,7 +170,7 @@ async function getProposal(proposalId) {
 async function getChoices(proposalId) {
   animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">fetching data ⌛</span>`;
   rcvTableElm.innerHTML = ``
   welcomeElm.innerHTML = ``
   let oneProposal = await fetch(snapshotApi, {
@@ -199,7 +199,7 @@ async function getChoices(proposalId) {
 async function setSeats(){
   animeElm.innerHTML = ``
   sankeyElm.innerHTML = ``
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">Fetching Data ⌛</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">fetching data ⌛</span>`;
   let proposalId = $('#selectProposal').find(":selected").val();
   if (proposalId) {
     const { seats } = await getChoices(proposalId);
@@ -209,7 +209,7 @@ async function setSeats(){
     }
     seatsElm.innerHTML = `<span style="font-size: 14px; font-weight: 400; font-family: 'SFMono'">seats to fill </span><select class="item" id="selectSeats">${optionElm}</select>`;
   }
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: yellow">↑ Waiting for input ↑</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">↑ waiting for input ↑</span>`;
 }
 
 async function countElectionVotes(proposalId, title, candidates, end, space, seatsToFill) {
@@ -285,7 +285,7 @@ async function showModal() {
     showRanking();
   } else {
     sankeyElm.innerHTML = ``
-    rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">animating ⌛</span>`;
+    rcvLoaderElm.innerHTML = `<span class="blink_me">animating ⌛</span>`;
     rcvTableElm.innerHTML = ``
     welcomeElm.innerHTML = ``
     let proposalId = $('#selectProposal').find(":selected").val();
@@ -298,7 +298,7 @@ async function showModal() {
       welcomeElm.innerHTML += `<h2>${title.toLowerCase()}</h2>`;
       welcomeElm.innerHTML += `<a rel="noreferrer" target='_blank' href="https://snapshot.org/#/${space}/proposal/${proposalId.toLowerCase()}" style="font-size: 15px;">link to snapshot ↗</a>`;
       if (results) {
-        rcvTableElm.innerHTML = `<tr><td><div class="tooltip">rank</div></td><td><span style="font-family:'EarthOrbiter'">choice</span></td><td><span style="font-family:'EarthOrbiter'">index</span></td><td><span style="font-family:'EarthOrbiter'">votes</span></td></tr>`
+        rcvTableElm.innerHTML = `<tr><td><span style="font-family:'Bioliquid'">rank</span></td><td><span style="font-family:'Bioliquid'">choice</span></td><td><span style="font-family:'Bioliquid'">index</span></td><td><span style="font-family:'Bioliquid'">votes</span></td></tr>`
         let currentList = Array.from(Array(Number(seatsToFill)).keys());
         for (var i = 0; i < results.details.winners.length; i++) {
           if (results.details.winners[i]) {
@@ -321,7 +321,7 @@ async function showModal() {
 
 async function showRanking() {
   sankeyElm.innerHTML = ``
-  rcvLoaderElm.innerHTML = `<span class="blink_me" style="font-size: 22px; color: orange">processing ⌛</span>`;
+  rcvLoaderElm.innerHTML = `<span class="blink_me">processing ⌛</span>`;
   rcvTableElm.innerHTML = ``
   welcomeElm.innerHTML = ``
   let proposalId = $('#selectProposal').find(":selected").val();
@@ -334,7 +334,7 @@ async function showRanking() {
     welcomeElm.innerHTML += `<h2>${title.toLowerCase()}</h2>`;
     welcomeElm.innerHTML += `<a rel="noreferrer" target='_blank' href="https://snapshot.org/#/${space}/proposal/${proposalId.toLowerCase()}" style="font-size: 15px;">link to snapshot ↗</a>`;
     if (results) {
-      rcvTableElm.innerHTML = `<tr><td><div class="tooltip">rank</div></td><td><span style="font-family:'EarthOrbiter'">choice</span></td><td><span style="font-family:'EarthOrbiter'">index</span></td><td><span style="font-family:'EarthOrbiter'">votes</span></td></tr>`
+      rcvTableElm.innerHTML = `<tr><td><span style="font-family:'Bioliquid'">rank</span></td><td><span style="font-family:'Bioliquid'">choice</span></td><td><span style="font-family:'Bioliquid'">index</span></td><td><span style="font-family:'Bioliquid'">votes</span></td></tr>`
       let currentList = Array.from(Array(Number(seatsToFill)).keys());
       for (var i = 0; i < results.details.winners.length; i++) {
         if (results.details.winners[i]) {

@@ -35,8 +35,8 @@
 }
 
 body {
-  font-family: "EarthOrbiter";
-  font-weight: 400;
+  font-family: "MajorMono";
+  font-weight: 800;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(-45deg, rgba(238,119,82,1) 0%, rgba(231,60,126,1) 20%, rgba(35,166,213,1) 40%, rgba(35,213,171,1) 60%, rgba(213,213,35,1) 80%, rgba(60,255,44,1) 100%);
@@ -313,7 +313,7 @@ iframe {
   border: 1px white solid;
   position: absolute;
   z-index: 1;
-  font-family: 'EarthOrbiter';
+  font-family: 'SFMono';
   font-weight: 400;
   font-size: 12px;
   margin-bottom: 20px;
@@ -338,6 +338,11 @@ iframe {
 
 .blink_me {
   animation: blinker 2s linear infinite;
+  font-size: 18px;
+  font-weight: 1200;
+  letter-spacing: -0.25px;
+  color: orange;
+  font-family: 'MajorMono';
 }
 
 @keyframes blinker {
